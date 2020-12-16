@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Property = require('../models/Property');
 const User = require('../models/User');
+const Booking = require('../models/Booking');
 const jwt = require('jsonwebtoken');
 const uploader = require('../config/cloudinary-setup');
 
@@ -28,6 +29,13 @@ router.get('/properties', (req, res) => {
     .catch((err) =>
       res.status(500).json({ message: 'Route Error', error: err })
     );
+});
+
+// SUBMIT NEW BOOKING
+router.post('/properties/:id/reserve', authCheck, (req, res, next) => {
+  Booking.create({ ...req.body })
+    .then(() => res.send('New Booking Submitted'))
+    .catch((err) => res.status(500).send('Submission Error' + err));
 });
 
 // SUBMIT NEW PROPERTY

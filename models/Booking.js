@@ -5,7 +5,7 @@ const User = require('./User');
 
 const bookingSchema = new Schema({
   property: { type: Schema.Types.ObjectId, ref: 'Property' },
-  userFirstName: { type: String, ref: 'User' },
+  user: { type: Schema.Types.ObjectId, ref: 'User' },
   checkinDate: Date,
   checkoutDate: Date,
 });

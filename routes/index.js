@@ -6,7 +6,8 @@ const jwt = require('jsonwebtoken');
 const uploader = require('../config/cloudinary-setup');
 
 const authCheck = (req, res, next) => {
-  let token = req.headers?.authorization?.split(' ')[1];
+  let token =
+    req.headers.authorization && req.headers.authorization.split(' ')[1];
 
   if (!token) return res.status(403).send('Unauthenticated');
   const decoded = jwt.verify(token, process.env.token);

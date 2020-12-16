@@ -11,6 +11,7 @@ const MONGODB_URI = process.env.DB_URL;
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
+const propertiesRouter = require('./routes/properties');
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use(bodyParser.json());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/properties', propertiesRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

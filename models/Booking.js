@@ -10,4 +10,4 @@ const bookingSchema = new Schema({
   checkoutDate: Date,
 });
 
-module.exports = mongoose.model('Property', propertySchema, 'properties');
+module.exports = mongoose.model('Booking', bookingSchema, 'bookings');

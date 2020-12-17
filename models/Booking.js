@@ -8,6 +8,7 @@ const bookingSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: 'User' },
   checkinDate: Date,
   checkoutDate: Date,
+  bookingSource: { type: String, enum: ['Direct', 'Airbnb', 'VRBO'] },
 });
 
 module.exports = mongoose.model('Booking', bookingSchema, 'bookings');

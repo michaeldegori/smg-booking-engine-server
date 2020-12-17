@@ -1,26 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Property = require('../models/Property');
-const User = require('../models/User');
 const Booking = require('../models/Booking');
-const jwt = require('jsonwebtoken');
 const uploader = require('../config/cloudinary-setup');
-
-const authCheck = (req, res, next) => {
-  let token =
-    req.headers.authorization && req.headers.authorization.split(' ')[1];
-
-  if (!token) return res.status(403).send('Unauthenticated');
-  const decoded = jwt.verify(token, process.env.token);
-  if (!decoded) res.status(403).send('Unauthenticated');
-
-  User.findById(decoded.id)
-    .then((user) => {
-      if (!user) res.status(403).send('Unauthenticated');
-      else next();
-    })
-    .catch((err) => console.log(err, 'Error'));
-};
+const authCheck = require('../middleware/authCheck');
 
 // GET ALL PROPERTIES
 router.get('/', (req, res) => {
@@ -33,7 +16,7 @@ router.get('/', (req, res) => {
 
 // SUBMIT NEW BOOKING
 router.post('/:id/reserve', authCheck, (req, res, next) => {
-  Booking.create({ ...req.body })
+  Booking.create({ ...req.body, user: req.user.id })
     .then(() => res.send('New Booking Submitted'))
     .catch((err) => res.status(500).send('Submission Error' + err));
 });

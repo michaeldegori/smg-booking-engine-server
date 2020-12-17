@@ -4,6 +4,18 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
+// GET USER
+router.get('/:id', (req, res) => {
+  User.findById(req.params.id)
+    .then((user) => {
+      if (!user) res.status(404).json({ message: 'No matching user found' });
+      else res.json(user);
+    })
+    .catch((err) =>
+      res.status(500).json({ message: 'Route Error', error: err })
+    );
+});
+
 // USER SIGNUP
 router.post('/signup', (req, res) => {
   bcrypt.hash(req.body.password, 10, (err, hash) => {

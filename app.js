@@ -53,12 +53,16 @@ app.use((err, req, res, next) => {
 
 // begin using Mongoose
 mongoose
-  .connect(MONGODB_URI, {
-    useCreateIndex: true,
-    useFindAndModify: false,
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(
+    MONGODB_URI ||
+      'mongodb+srv://michaeldegori:6aFZM9jWH3DWrim@12-1-test.rkccj.mongodb.net/smg-direct-booking-site',
+    {
+      useCreateIndex: true,
+      useFindAndModify: false,
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
   .then((self) => {
     console.log(`Connected to the database: "${self.connection.name}"`);
   })

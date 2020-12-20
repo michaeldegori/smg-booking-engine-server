@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const { check, validationResult } = require('express-validator');
 
 // GET USER
 router.get('/:id', (req, res) => {
@@ -17,26 +18,42 @@ router.get('/:id', (req, res) => {
 });
 
 // USER SIGNUP
-router.post('/signup', (req, res) => {
-  bcrypt.hash(req.body.password, 10, (err, hash) => {
-    if (err) console.log('HASHING ERROR', err);
-    else {
-      User.create({
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        birthdate: req.body.date,
-        email: req.body.email,
-        password: hash,
-      })
-        .then((user) => {
-          res.status(200).send('User Created');
-        })
-        .catch((err) => {
-          res.status(500).send('User Creation Failed');
-        });
+router.post(
+  '/signup',
+  [
+    check('firstName').not().isEmpty().withMessage('First name is required'),
+    check('email').isEmail().normalizeEmail(),
+    check('password').isStrongPassword(),
+  ],
+  (req, res) => {
+    const errors = validationResult(req).array();
+    if (!errors.isEmpty()) {
+      console.log(errors);
+      res.status(422).json({ errors: errors.array() });
     }
-  });
-});
+
+    bcrypt.hash(req.body.password, 10, (err, hash) => {
+      if (err) console.log('HASHING ERROR', err);
+      else {
+        User.create({
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+          phone: req.body.phone,
+          birthdate: req.body.date,
+          email: req.body.email,
+          password: hash,
+        })
+          .then((user) => {
+            res.status(200).send('User Created');
+          })
+          .catch((err) => {
+            console.log(err);
+            res.status(500).send('User Creation Failed');
+          });
+      }
+    });
+  }
+);
 
 //USER LOGIN
 router.post('/login', (req, res) => {

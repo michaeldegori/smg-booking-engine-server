@@ -31,14 +31,12 @@ router.post(
       console.log(errors);
       res.status(422).json({ errors: errors.array() });
     }
-
     bcrypt.hash(req.body.password, 10, (err, hash) => {
       if (err) console.log('HASHING ERROR', err);
       else {
         User.create({
           firstName: req.body.firstName,
           lastName: req.body.lastName,
-          phone: req.body.phone,
           birthdate: req.body.date,
           email: req.body.email,
           password: hash,
@@ -47,7 +45,6 @@ router.post(
             res.status(200).send('User Created');
           })
           .catch((err) => {
-            console.log(err);
             res.status(500).send('User Creation Failed');
           });
       }

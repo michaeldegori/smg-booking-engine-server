@@ -62,25 +62,20 @@ router.post(
 router.post('/login', (req, res) => {
   User.findOne({ email: req.body.email }).then((user) => {
     if (!user) res.status(403).send('Invalid Login Credentials');
-    else if (user) {
-      bcrypt.compare(req.body.password, user.password, function (err, match) {
-        if (err) res.status(500).send('Invalid Password');
-        if (match) {
-          const token = jwt.sign({ id: user._id }, process.env.token);
-          res.json({
-            token: token,
-            user: {
-              firstName: user.firstName,
-              lastName: user.lastName,
-              birthdate: user.birthdate,
-              email: user.email,
-            },
-          });
-        } else res.status(403).send('Invalid credentials');
+    bcrypt.compare(req.body.password, user.password, function (err, match) {
+      if (err) return res.status(400).send('Invalid Password');
+      if (!match) return res.status(403).send('Invalid credentials');
+      const token = jwt.sign({ id: user._id }, process.env.token);
+      res.json({
+        token: token,
+        user: {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          birthdate: user.birthdate,
+          email: user.email,
+        },
       });
-    } else {
-      res.status(403).send('Invalid credentials');
-    }
+    });
   });
 });
 
